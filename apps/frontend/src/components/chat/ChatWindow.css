@@ -1,0 +1,32 @@
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: white;
+}
+
+.chat-header {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-header h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+}
+
+.user-info {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.chat-error {
+  background-color: #fee;
+  color: #c33;
+  padding: 12px 20px;
+  border-bottom: 1px solid #fcc;
+  font-size: 14px;
+}
+
