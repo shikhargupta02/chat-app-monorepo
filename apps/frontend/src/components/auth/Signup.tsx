@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setLoading, setError, loginSuccess } from '../../store/slices/authSlice';
-import { authApi } from '../../api/authApi';
+import { signUpRequest } from '../../store/slices/authSlice';
 import './Auth.css';
 
 export function Signup() {
@@ -11,19 +10,11 @@ export function Signup() {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(setError(null));
-    dispatch(setLoading(true));
-
-    try {
-      const response = await authApi.signUp({ email, password, username: username || undefined });
-      dispatch(loginSuccess({ token: response.token, user: response.user }));
-    } catch (err: any) {
-      dispatch(setError(err.message || 'Sign up failed'));
-    } finally {
-      dispatch(setLoading(false));
-    }
+    dispatch(
+      signUpRequest({ email, password, username: username || undefined }),
+    );
   };
 
   return (
@@ -43,12 +34,13 @@ export function Signup() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="username">Username (optional)</label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
               disabled={loading}
             />
           </div>
@@ -72,4 +64,3 @@ export function Signup() {
     </div>
   );
 }
-

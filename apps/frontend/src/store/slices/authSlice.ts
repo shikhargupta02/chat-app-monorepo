@@ -1,8 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface User {
+export interface User {
   id: string;
   email: string;
+  username?: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface SignUpRequest {
+  email: string;
+  password: string;
   username?: string;
 }
 
@@ -26,6 +37,14 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    // Saga trigger actions
+    loginRequest: (state, action: PayloadAction<LoginRequest>) => {
+      // Saga will handle this
+    },
+    signUpRequest: (state, action: PayloadAction<SignUpRequest>) => {
+      // Saga will handle this
+    },
+    // State update actions
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -50,6 +69,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setLoading, setError, loginSuccess, logout } = authSlice.actions;
+export const { loginRequest, signUpRequest, setLoading, setError, loginSuccess, logout } = authSlice.actions;
 export default authSlice.reducer;
 

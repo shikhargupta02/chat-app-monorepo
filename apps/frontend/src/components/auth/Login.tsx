@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setLoading, setError, loginSuccess } from '../../store/slices/authSlice';
-import { authApi } from '../../api/authApi';
+import { loginRequest } from '../../store/slices/authSlice';
 import './Auth.css';
 
 export function Login() {
@@ -10,19 +9,9 @@ export function Login() {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(setError(null));
-    dispatch(setLoading(true));
-
-    try {
-      const response = await authApi.login({ email, password });
-      dispatch(loginSuccess({ token: response.token, user: response.user }));
-    } catch (err: any) {
-      dispatch(setError(err.message || 'Login failed'));
-    } finally {
-      dispatch(setLoading(false));
-    }
+    dispatch(loginRequest({ email, password }));
   };
 
   return (

@@ -1,53 +1,25 @@
-import { useState } from 'react';
-import { ChatWindow } from './ChatWindow';
-import './ChatSelector.css';
+import { useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { setShowNewChatModal } from '../../store/slices/messageSlice';
+import { ChatLayout } from './ChatLayout';
+import { NewChatModal } from './NewChatModal';
 
 export function ChatSelector() {
-  const [receiverId, setReceiverId] = useState('');
-  const [selectedReceiver, setSelectedReceiver] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { chats, showNewChatModal } = useAppSelector((state) => state.messages);
 
-  const handleStartChat = () => {
-    if (receiverId.trim()) {
-      setSelectedReceiver(receiverId.trim());
+  useEffect(() => {
+    if (isAuthenticated && chats?.length === 0 && !showNewChatModal) {
+      dispatch(setShowNewChatModal(true));
     }
-  };
-
-  const handleBack = () => {
-    setSelectedReceiver(null);
-    setReceiverId('');
-  };
-
-  if (selectedReceiver) {
-    return (
-      <div>
-        <div className="back-button-container">
-          <button onClick={handleBack} className="back-button">
-            ← Back to Chat Selection
-          </button>
-        </div>
-        <ChatWindow receiverId={selectedReceiver} />
-      </div>
-    );
-  }
+    return undefined;
+  }, [isAuthenticated, chats, dispatch]);
 
   return (
-    <div className="chat-selector">
-      <div className="chat-selector-card">
-        <h2>Start a Chat</h2>
-        <p>Enter the user ID of the person you want to chat with</p>
-        <div className="input-group">
-          <input
-            type="text"
-            placeholder="Enter receiver ID"
-            value={receiverId}
-            onChange={(e) => setReceiverId(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleStartChat()}
-          />
-          <button onClick={handleStartChat} disabled={!receiverId.trim()}>
-            Start Chat
-          </button>
-        </div>
-      </div>
-    </div>
+    <>
+      <ChatLayout />
+      {showNewChatModal && <NewChatModal />}
+    </>
   );
 }

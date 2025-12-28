@@ -1,7 +1,7 @@
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   background: white;
 }
 
@@ -29,4 +29,3 @@
   border-bottom: 1px solid #fcc;
   font-size: 14px;
 }
-

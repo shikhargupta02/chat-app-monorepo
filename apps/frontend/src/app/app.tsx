@@ -4,9 +4,34 @@ import { AuthPage } from '../components/auth/AuthPage';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { ChatSelector } from '../components/chat/ChatSelector';
 import { useAppSelector } from '../store/hooks';
+import { useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { getMessagesRequest } from '../store/slices/messageSlice';
 
 export function App() {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const wsRef = useRef<WebSocket | null>(null);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      const ws = new WebSocket(`ws://localhost:3000?email=${user.email}`);
+      wsRef.current = ws;
+
+      ws.onopen = () => console.log('CLIENT: Connected to server');
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.payload.chatId)
+          dispatch(getMessagesRequest({ chatId: data.payload.chatId }));
+      };
+      ws.onerror = (error) => console.error('WebSocket error:', error);
+      ws.onclose = () => console.log('CLIENT: Disconnected');
+
+      return () => {
+        ws.close();
+      };
+    }
+    return undefined;
+  }, [isAuthenticated, user?.email]);
 
   return (
     <Layout>
